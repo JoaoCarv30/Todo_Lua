@@ -1,5 +1,5 @@
-local chalk = require('chalk')
-local json = require("json")
+local chalk = require('../libs/chalk')
+local json = require("../libs/json")
 
 local green = chalk.green.bold
 local yellow = chalk.yellow.bold
@@ -28,6 +28,8 @@ local function SalvarTarefas(tarefas)
 end
 
 
+
+
 local function LimparTela()
   
     local sistema = os.getenv("OS") or io.popen("uname"):read("*a")
@@ -40,8 +42,16 @@ end
 
 
 local function AdicionarTarefa(tarefas, nome)
+    local novoId = 0
+    for _, tarefa in ipairs(tarefas) do
+        if tarefa.id > novoId then
+            novoId = tarefa.id
+        end
+    end
+    novoId = novoId + 1
+
     local novaTarefa = {
-        id = #tarefas + 1,  
+        id = novoId,  
         nome = nome,
         status = "pendente"  
     }
@@ -67,7 +77,6 @@ end
 local function AtualizarStatusTarefa(tarefas, id)
     for _, tarefa in ipairs(tarefas) do
         if tarefa.id == id then
-            -- Verifica o status atual da tarefa
             if tarefa.status == "pendente" then
                 tarefa.status = "concluido"
             elseif tarefa.status == "concluido" then
